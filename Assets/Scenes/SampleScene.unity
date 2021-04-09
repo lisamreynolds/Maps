@@ -168,10 +168,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 886c0745d164c484ea45a84f3bc615f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  width: 6
-  height: 6
+  width: 10
+  height: 10
   biomePrefab: {fileID: 80341453}
   trianglePrefab: {fileID: 1955728162214173200}
+  biomes:
+  - {fileID: 11400000, guid: 5316e9e012aae4e43817b7921d722a1d, type: 2}
+  - {fileID: 11400000, guid: 35b61bad305d45042a7e0c828f972dc5, type: 2}
+  - {fileID: 11400000, guid: 43b0bb224057bf4438f87a9184725491, type: 2}
+  - {fileID: 11400000, guid: 3b33479e87f64ce4d842a082a91f7736, type: 2}
 --- !u!4 &569245644
 Transform:
   m_ObjectHideFlags: 0
@@ -358,7 +363,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
   m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 50, y: 220, z: 35.1}
+  m_LocalPosition: {x: 85, y: 320, z: 65}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}

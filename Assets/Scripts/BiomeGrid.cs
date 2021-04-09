@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using Assets.Scripts;
 
 public class BiomeGrid : MonoBehaviour
 {
@@ -10,25 +11,27 @@ public class BiomeGrid : MonoBehaviour
 	public BiomeCell biomePrefab;
 	public TriangleCell trianglePrefab;
 
-	private List<BiomeCell> biomes;
+	public List<Biome> biomes;
+
+	private List<BiomeCell> biomeCells;
 
 	void Awake()
 	{
-		biomes = new List<BiomeCell>();
+		biomeCells = new List<BiomeCell>();
 
 		for (int r = 0; r < height; r++)
 			for (int q = 0; q < width; q++)
 				CreateCell(q, r);
 
-		biomes.Where(b => b.coordinates.q < width - 1
+		biomeCells.Where(b => b.coordinates.q < width - 1
 					   && b.coordinates.r < height - 1)
-			  .ToList()
 			  .ForEach(b => CreateUpTriangle(b));
 
-		biomes.Where(b => b.coordinates.q < width - 1
+		biomeCells.Where(b => b.coordinates.q < width - 1
 					   && b.coordinates.r > 0)
-			  .ToList()
 			  .ForEach(b => CreateDownTriangle(b));
+
+		GenerateBiomes();
 	}
 
 	void CreateCell(int q, int r)
@@ -44,7 +47,7 @@ public class BiomeGrid : MonoBehaviour
 		cell.transform.SetParent(transform);
         cell.transform.localPosition = position;
 
-        biomes.Add(cell);
+        biomeCells.Add(cell);
 	}
 
 	void CreateUpTriangle(BiomeCell baseBiome)
@@ -52,10 +55,10 @@ public class BiomeGrid : MonoBehaviour
 		Vector3 basePosition = baseBiome.transform.localPosition;
 
 		var coordsNE = new BiomeCoordinates(baseBiome.coordinates.NorthEast());
-		BiomeCell biomeNE = biomes.Single(b => b.coordinates.Equals(coordsNE));
+		BiomeCell biomeNE = biomeCells.Single(b => b.coordinates.Equals(coordsNE));
 		
 		var coordsE = new BiomeCoordinates(baseBiome.coordinates.East());
-		BiomeCell biomeE = biomes.Single(b => b.coordinates.Equals(coordsE));
+		BiomeCell biomeE = biomeCells.Single(b => b.coordinates.Equals(coordsE));
 
 		Vector3[] positions = new BiomeCell[] { baseBiome, biomeNE, biomeE }
 			.Select(biome => biome.transform.localPosition)
@@ -70,10 +73,10 @@ public class BiomeGrid : MonoBehaviour
 		Vector3 basePosition = baseBiome.transform.localPosition;
 		
 		var coordsE = new BiomeCoordinates(baseBiome.coordinates.East());
-		BiomeCell biomeE = biomes.Single(b => b.coordinates.Equals(coordsE));
+		BiomeCell biomeE = biomeCells.Single(b => b.coordinates.Equals(coordsE));
 
 		var coordsSE = new BiomeCoordinates(baseBiome.coordinates.SouthEast());
-		BiomeCell biomeSE = biomes.Single(b => b.coordinates.Equals(coordsSE));
+		BiomeCell biomeSE = biomeCells.Single(b => b.coordinates.Equals(coordsSE));
 
 		Vector3[] positions = new BiomeCell[] { baseBiome, biomeE, biomeSE }
 			.Select(biome => biome.transform.localPosition)
@@ -87,14 +90,43 @@ public class BiomeGrid : MonoBehaviour
     {
 		// Just to prove that the coordinate system works
 
-		var plainsMaterial = (Material) Resources.Load("Materials/Plains");
+		Biome plainsBiome = biomes.Single(b => b.type == BiomeType.Plains);
 
 		var affectedCoordinates = new List<BiomeCoordinates>();
 		affectedCoordinates.Add(coordinates);
 		affectedCoordinates.AddRange(coordinates.AllNeighbors());
 
-		biomes.Where(b => affectedCoordinates.Contains(b.coordinates))
-			  .ToList()
-			  .ForEach(b => b.ChangeMaterial(plainsMaterial));
+		biomeCells.Where(b => affectedCoordinates.Contains(b.coordinates))
+			  .ForEach(b => b.SetBiome(plainsBiome));
+    }
+
+	void GenerateBiomes()
+    {
+		Biome waterBiome = biomes.Single(b => b.type == BiomeType.Water);
+		bool IsOnBorder(BiomeCoordinates coords) => coords.q <= 0 || coords.r <= 0 || coords.q >= width - 1 || coords.r >= height - 1;
+		biomeCells.Where(b => IsOnBorder(b.coordinates))
+				  .ForEach(b => b.SetBiome(waterBiome));
+
+		biomeCells.Where(cell => cell.type == BiomeType.None)
+				  .ForEach(cell => ChooseBiome(cell));
+    }
+
+	void ChooseBiome(BiomeCell cell)
+    {
+		var neighborCoordinates = cell.coordinates.AllNeighbors();
+		var neighborTypes = biomeCells.Where(bc => neighborCoordinates.Contains(bc.coordinates))
+									  .Select(neighborCell => neighborCell.type)
+									  .ToList();
+
+		var possibilities = new Dictionary<Biome, float>();
+		biomes.Where(b => b.type != BiomeType.None)
+			  .ForEach(biome => possibilities.Add(biome, biome.GetWeight(neighborTypes)));
+
+        var sum = 0.0;
+        var total = possibilities.Values.Sum();
+        var rand = UnityEngine.Random.value * total;
+
+        var chosenBiome = possibilities.First(entry => { sum += entry.Value; return rand < sum; }).Key;
+		cell.SetBiome(chosenBiome);
     }
 }

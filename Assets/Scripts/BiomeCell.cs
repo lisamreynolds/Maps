@@ -2,6 +2,8 @@ using UnityEngine;
 
 public class BiomeCell : MonoBehaviour
 {
+    public BiomeType type;
+
     internal BiomeGrid grid;
     internal BiomeCoordinates coordinates;
 
@@ -10,9 +12,10 @@ public class BiomeCell : MonoBehaviour
         grid.AlterBiomes(coordinates);
     }
 
-    public void ChangeMaterial(Material newMaterial)
+    public void SetBiome(Biome biome)
     {
-        GetComponent<MeshRenderer>().material = newMaterial;
+        type = biome.type;
+        GetComponent<MeshRenderer>().material = biome.material;
     }
 
     internal void SetCoordinates(int q, int r)
