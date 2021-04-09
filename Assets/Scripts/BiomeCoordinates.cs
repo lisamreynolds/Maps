@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-internal class BiomeCoordinates
+internal struct BiomeCoordinates
 {
     public int q;
     public int r;
