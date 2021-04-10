@@ -13,5 +13,10 @@ namespace Assets.Scripts
             foreach (var item in items)
                 action(item);
         }
+
+        public static T Random<T>(this IEnumerable<T> items)
+        {
+            return items.ElementAt(UnityEngine.Random.Range(0, items.Count()));
+        }
     }
 }

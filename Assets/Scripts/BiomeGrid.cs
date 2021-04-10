@@ -9,14 +9,15 @@ public class BiomeGrid : MonoBehaviour
 	public int height = 6;
 
 	public BiomeCell biomePrefab;
-	public TriangleCell trianglePrefab;
 
 	public List<Biome> biomes;
 
+	private TileManager tileManager;
 	private List<BiomeCell> biomeCells;
 
 	void Awake()
 	{
+		tileManager = GetComponent<TileManager>();
 		biomeCells = new List<BiomeCell>();
 
 		for (int r = 0; r < height; r++)
@@ -64,8 +65,7 @@ public class BiomeGrid : MonoBehaviour
 			.Select(biome => biome.transform.localPosition)
 			.ToArray();
 
-		TriangleCell cell = Instantiate(trianglePrefab, transform);
-        cell.SetMesh(positions);
+		tileManager.CreateTileCell(positions[0], true);
     }
 
 	void CreateDownTriangle(BiomeCell baseBiome)
@@ -82,8 +82,7 @@ public class BiomeGrid : MonoBehaviour
 			.Select(biome => biome.transform.localPosition)
 			.ToArray();
 
-		TriangleCell cell = Instantiate(trianglePrefab, transform);
-		cell.SetMesh(positions);
+		tileManager.CreateTileCell(positions[0], false);
 	}
 
 	internal void AlterBiomes(BiomeCoordinates coordinates)
