@@ -20,7 +20,6 @@ public class TileManager : MonoBehaviour
     {
         var rotation = Quaternion.Euler(90, upTriangle ? 0 : 180, 0);
         var position = basePosition + HexMetrics.corners[upTriangle ? 1 : 2];
-        position.y = -HexMetrics.outerRadius; // Weird artifact of Blender model?
 
         var tile = Instantiate(tiles.Random().tileObject, position, rotation, transform);
         tile.transform.localScale = new Vector3(HexMetrics.outerRadius, HexMetrics.outerRadius, HexMetrics.outerRadius);

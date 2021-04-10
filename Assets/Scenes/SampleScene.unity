@@ -208,6 +208,16 @@ MonoBehaviour:
   trianglePrefab: {fileID: 1955728162214173200}
   tiles:
   - {fileID: 11400000, guid: d9a6661c0db1c224ea6ce866349e014a, type: 2}
+  - {fileID: 11400000, guid: 0f65b7fb5ef2c27428c1e0d9efe39591, type: 2}
+  - {fileID: 11400000, guid: 2bb688426d12554499ddc0103e686951, type: 2}
+  - {fileID: 11400000, guid: 413c5c0c0d938d449b6ce73f2a2d5a1b, type: 2}
+  - {fileID: 11400000, guid: 9f19085695850314595b491f6e2ed05c, type: 2}
+  - {fileID: 11400000, guid: eb7a2e56a2b835340a9da4de8ac474e5, type: 2}
+  - {fileID: 11400000, guid: 957affd597b4f5641897fcb1d1008879, type: 2}
+  - {fileID: 11400000, guid: d9a6661c0db1c224ea6ce866349e014a, type: 2}
+  - {fileID: 11400000, guid: adce97f15a9792e45b2b5d39fc48c75c, type: 2}
+  - {fileID: 11400000, guid: d3dd4417772fbc54480dd4194abeb6ad, type: 2}
+  - {fileID: 11400000, guid: 459b3a2a482e8c64c976c8c563acff6c, type: 2}
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0

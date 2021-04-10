@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f5e644a0ee9c1f6468c2523bd0e74a42, type: 3}
-  m_Name: PFW
+  m_Name: WWW
   m_EditorClassIdentifier: 
-  tileObject: {fileID: 919132149155446097, guid: 35d202106b9a83349a252c4d0425889c, type: 3}
-  flip: 1
-  rotate: 1
-  biomes: 020000000300000001000000
+  tileObject: {fileID: 919132149155446097, guid: 1d9894b6e3a26e149a74fb6e4a63b0c4, type: 3}
+  flip: 0
+  rotate: 0
+  biomes: 010000000100000001000000
