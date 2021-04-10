@@ -1,10 +1,8 @@
-﻿using UnityEngine;
+using UnityEngine;
 
-[CreateAssetMenu(fileName = "TileData", menuName = "ScriptableObjects/TileScriptableObject", order = 1)]
-public class Tile : ScriptableObject
+public struct Tile
 {
     public GameObject tileObject;
-    public bool flip;
-    public bool rotate;
-    public BiomeType[] biomes = new BiomeType[3];
+    public BiomeType[] biomes;
+    public Quaternion rotation;
 }

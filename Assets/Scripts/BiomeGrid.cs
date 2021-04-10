@@ -24,6 +24,8 @@ public class BiomeGrid : MonoBehaviour
 			for (int q = 0; q < width; q++)
 				CreateCell(q, r);
 
+		GenerateBiomes();
+
 		biomeCells.Where(b => b.coordinates.q < width - 1
 					   && b.coordinates.r < height - 1)
 			  .ForEach(b => CreateUpTriangle(b));
@@ -31,8 +33,6 @@ public class BiomeGrid : MonoBehaviour
 		biomeCells.Where(b => b.coordinates.q < width - 1
 					   && b.coordinates.r > 0)
 			  .ForEach(b => CreateDownTriangle(b));
-
-		GenerateBiomes();
 	}
 
 	void CreateCell(int q, int r)
@@ -53,36 +53,26 @@ public class BiomeGrid : MonoBehaviour
 
 	void CreateUpTriangle(BiomeCell baseBiome)
     {
-		Vector3 basePosition = baseBiome.transform.localPosition;
-
 		var coordsNE = new BiomeCoordinates(baseBiome.coordinates.NorthEast());
-		BiomeCell biomeNE = biomeCells.Single(b => b.coordinates.Equals(coordsNE));
+        BiomeCell biomeNE = this.biomeCells.Single(b => b.coordinates.Equals(coordsNE));
 		
 		var coordsE = new BiomeCoordinates(baseBiome.coordinates.East());
-		BiomeCell biomeE = biomeCells.Single(b => b.coordinates.Equals(coordsE));
+        BiomeCell biomeE = this.biomeCells.Single(b => b.coordinates.Equals(coordsE));
 
-		Vector3[] positions = new BiomeCell[] { baseBiome, biomeNE, biomeE }
-			.Select(biome => biome.transform.localPosition)
-			.ToArray();
-
-		tileManager.CreateTileCell(positions[0], true);
+		BiomeCell[] biomeCells = new BiomeCell[] { baseBiome, biomeNE, biomeE };
+		tileManager.CreateTileCell(biomeCells, true);
     }
 
 	void CreateDownTriangle(BiomeCell baseBiome)
 	{
-		Vector3 basePosition = baseBiome.transform.localPosition;
-		
 		var coordsE = new BiomeCoordinates(baseBiome.coordinates.East());
-		BiomeCell biomeE = biomeCells.Single(b => b.coordinates.Equals(coordsE));
+        BiomeCell biomeE = this.biomeCells.Single(b => b.coordinates.Equals(coordsE));
 
 		var coordsSE = new BiomeCoordinates(baseBiome.coordinates.SouthEast());
-		BiomeCell biomeSE = biomeCells.Single(b => b.coordinates.Equals(coordsSE));
+        BiomeCell biomeSE = this.biomeCells.Single(b => b.coordinates.Equals(coordsSE));
 
-		Vector3[] positions = new BiomeCell[] { baseBiome, biomeE, biomeSE }
-			.Select(biome => biome.transform.localPosition)
-			.ToArray();
-
-		tileManager.CreateTileCell(positions[0], false);
+		BiomeCell[] biomeCells = new BiomeCell[] { baseBiome, biomeE, biomeSE };
+		tileManager.CreateTileCell(biomeCells, false);
 	}
 
 	internal void AlterBiomes(BiomeCoordinates coordinates)
