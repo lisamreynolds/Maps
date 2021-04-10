@@ -15,15 +15,12 @@ public class BiomeGrid : MonoBehaviour
     public List<Biome> biomes;
 
     private TileManager tileManager;
-    private List<BiomeCell> biomeCells;
-
-    private Queue<Action> triangleQueue;
+    private readonly List<BiomeCell> biomeCells = new List<BiomeCell>();
+    private readonly Queue<Action> triangleQueue = new Queue<Action>();
 
     void Awake()
     {
         tileManager = GetComponent<TileManager>();
-        biomeCells = new List<BiomeCell>();
-        triangleQueue = new Queue<Action>();
 
         for (int r = 0; r < height; r++)
             for (int q = 0; q < width; q++)
@@ -49,10 +46,12 @@ public class BiomeGrid : MonoBehaviour
 
     void CreateCell(int q, int r)
     {
-        Vector3 position;
-        position.x = (q + r * 0.5f - r / 2) * (HexMetrics.innerRadius * 2f);
-        position.y = 0f;
-        position.z = r * (HexMetrics.outerRadius * 1.5f);
+        var position = new Vector3
+        {
+            x = (q + r * 0.5f - r / 2) * (HexMetrics.innerRadius * 2f),
+            y = 0f,
+            z = r * (HexMetrics.outerRadius * 1.5f),
+        };
 
         BiomeCell cell = Instantiate(biomePrefab);
         cell.grid = this;
@@ -137,6 +136,6 @@ public class BiomeGrid : MonoBehaviour
         affectedCoordinates.AddRange(coordinates.AllNeighbors());
 
         biomeCells.Where(b => affectedCoordinates.Contains(b.coordinates))
-              .ForEach(b => b.SetBiome(plainsBiome));
+                  .ForEach(b => b.SetBiome(plainsBiome));
     }
 }

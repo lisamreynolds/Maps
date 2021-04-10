@@ -7,14 +7,11 @@ public class TileManager : MonoBehaviour
 {
     public List<TileInput> tileInputs;
 
-    internal List<Tile> tileOptions;
-    internal Dictionary<Vector3, GameObject> placedTiles;
+    internal List<Tile> tileOptions = new List<Tile>();
+    internal Dictionary<Vector3, GameObject> placedTiles = new Dictionary<Vector3, GameObject>();
 
     private void Awake()
     {
-        placedTiles = new Dictionary<Vector3, GameObject>();
-
-        tileOptions = new List<Tile>();
         foreach (var tileInput in tileInputs)
         {
             // If you're reading this, send help

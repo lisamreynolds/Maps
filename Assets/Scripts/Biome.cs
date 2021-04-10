@@ -10,14 +10,14 @@ public class Biome : ScriptableObject
 
     public float GetWeight(List<BiomeType> neighborTypes)
     {
-        int MatchingNeighbors() => neighborTypes.Count(neighborType => neighborType == type);
+        var matchingNeighbors = neighborTypes.Count(neighborType => neighborType == type);
 
         if (type == BiomeType.Water)
         {
-            return Mathf.Max(MatchingNeighbors(), .5f);
+            return Mathf.Max(matchingNeighbors, .5f);
         }
 
-        return Mathf.Max(MatchingNeighbors() * 2, 1.5f);
+        return Mathf.Max(matchingNeighbors * 2, 1.5f);
     }
 }
 
