@@ -16,7 +16,7 @@ public class BiomeGrid : MonoBehaviour
 
     private TileManager tileManager;
     private readonly List<BiomeCell> biomeCells = new List<BiomeCell>();
-    private readonly Queue<Action> triangleQueue = new Queue<Action>();
+    private readonly Queue<BiomeCell> triangleQueue = new Queue<BiomeCell>();
 
     void Awake()
     {
@@ -36,9 +36,9 @@ public class BiomeGrid : MonoBehaviour
             if (b.coordinates.q >= width - 1)
                 continue;
             if (b.coordinates.r < height - 1)
-                triangleQueue.Enqueue(() => CreateUpTriangle(b));
+                triangleQueue.Enqueue(b);
             if (b.coordinates.r > 0)
-                triangleQueue.Enqueue(() => CreateDownTriangle(b));
+                triangleQueue.Enqueue(b);
         }
 
         StartCoroutine(nameof(CreateTrianglesFromQueue));
@@ -65,25 +65,25 @@ public class BiomeGrid : MonoBehaviour
     void CreateUpTriangle(BiomeCell baseBiome)
     {
         var coordsNE = new BiomeCoordinates(baseBiome.coordinates.NorthEast());
-        BiomeCell biomeNE = this.biomeCells.Single(b => b.coordinates.Equals(coordsNE));
+        BiomeCell biomeNE = biomeCells.Single(b => b.coordinates.Equals(coordsNE));
 
         var coordsE = new BiomeCoordinates(baseBiome.coordinates.East());
-        BiomeCell biomeE = this.biomeCells.Single(b => b.coordinates.Equals(coordsE));
+        BiomeCell biomeE = biomeCells.Single(b => b.coordinates.Equals(coordsE));
 
-        BiomeCell[] biomeCells = new BiomeCell[] { baseBiome, biomeNE, biomeE };
-        tileManager.CreateTileCell(biomeCells, true);
+        BiomeCell[] relevantCells = new BiomeCell[] { baseBiome, biomeNE, biomeE };
+        tileManager.CreateTileCell(relevantCells, true);
     }
 
     void CreateDownTriangle(BiomeCell baseBiome)
     {
         var coordsE = new BiomeCoordinates(baseBiome.coordinates.East());
-        BiomeCell biomeE = this.biomeCells.Single(b => b.coordinates.Equals(coordsE));
+        BiomeCell biomeE = biomeCells.Single(b => b.coordinates.Equals(coordsE));
 
         var coordsSE = new BiomeCoordinates(baseBiome.coordinates.SouthEast());
-        BiomeCell biomeSE = this.biomeCells.Single(b => b.coordinates.Equals(coordsSE));
+        BiomeCell biomeSE = biomeCells.Single(b => b.coordinates.Equals(coordsSE));
 
-        BiomeCell[] biomeCells = new BiomeCell[] { baseBiome, biomeE, biomeSE };
-        tileManager.CreateTileCell(biomeCells, false);
+        BiomeCell[] relevantCells = new BiomeCell[] { baseBiome, biomeE, biomeSE };
+        tileManager.CreateTileCell(relevantCells, false);
     }
 
     void GenerateBiomes()
@@ -101,7 +101,7 @@ public class BiomeGrid : MonoBehaviour
     {
         while (triangleQueue.Any())
         {
-            triangleQueue.Dequeue().Invoke();
+            CreateTrianglesForBiome(triangleQueue.Dequeue());
             yield return new WaitForSeconds(0);
         }
     }
@@ -127,15 +127,41 @@ public class BiomeGrid : MonoBehaviour
 
     internal void AlterBiomes(BiomeCoordinates coordinates)
     {
-        // Just to prove that the coordinate system works
+        var biomeCell = biomeCells.Single(bc => bc.coordinates.Equals(coordinates));
 
         Biome plainsBiome = biomes.Single(b => b.type == BiomeType.Plains);
+        biomeCell.SetBiome(plainsBiome);
 
-        var affectedCoordinates = new List<BiomeCoordinates>();
-        affectedCoordinates.Add(coordinates);
-        affectedCoordinates.AddRange(coordinates.AllNeighbors());
+        CreateTrianglesForBiome(biomeCell);
+    }
 
-        biomeCells.Where(b => affectedCoordinates.Contains(b.coordinates))
-                  .ForEach(b => b.SetBiome(plainsBiome));
+    void CreateTrianglesForBiome(BiomeCell biomeCell)
+    {
+        var coordinates = biomeCell.coordinates;
+
+        var neighborNE = biomeCells.SingleOrDefault(bc => bc.coordinates.Equals(new BiomeCoordinates(coordinates.NorthEast())));
+        var neighborE = biomeCells.SingleOrDefault(bc => bc.coordinates.Equals(new BiomeCoordinates(coordinates.East())));
+        var neighborSE = biomeCells.SingleOrDefault(bc => bc.coordinates.Equals(new BiomeCoordinates(coordinates.SouthEast())));
+        var neighborSW = biomeCells.SingleOrDefault(bc => bc.coordinates.Equals(new BiomeCoordinates(coordinates.SouthWest())));
+        var neighborW = biomeCells.SingleOrDefault(bc => bc.coordinates.Equals(new BiomeCoordinates(coordinates.West())));
+        var neighborNW = biomeCells.SingleOrDefault(bc => bc.coordinates.Equals(new BiomeCoordinates(coordinates.NorthWest())));
+
+        if (neighborNE != null && neighborE != null)
+            CreateUpTriangle(biomeCell);
+
+        if (neighborSE != null && neighborE != null)
+            CreateDownTriangle(biomeCell);
+
+        if (neighborNE != null && neighborNW != null)
+            CreateDownTriangle(neighborNW);
+
+        if (neighborNW != null && neighborW != null)
+            CreateUpTriangle(neighborW);
+
+        if (neighborSW != null && neighborW != null)
+            CreateDownTriangle(neighborW);
+
+        if (neighborSE != null && neighborSW != null)
+            CreateUpTriangle(neighborSW);
     }
 }
