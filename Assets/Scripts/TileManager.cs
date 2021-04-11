@@ -9,56 +9,30 @@ public class TileManager : MonoBehaviour
 
     internal List<Tile> tileOptions = new List<Tile>();
     internal Dictionary<Vector3, GameObject> placedTiles = new Dictionary<Vector3, GameObject>();
-
     private void Awake()
     {
-        foreach (var tileInput in tileInputs)
+        BiomeType[] RearrangeBiomes(BiomeType[] biomes, int first, int second, int third) => new BiomeType[] { biomes[first], biomes[second], biomes[third] };
+
+        Quaternion flip = Quaternion.Euler(0, 180, 0);
+        Quaternion rotateForward = Quaternion.Euler(0, 0, 120);
+        Quaternion rotateBackward = Quaternion.Euler(0, 0, -120);
+
+        foreach (var input in tileInputs)
         {
-            // If you're reading this, send help
-            tileOptions.Add(new Tile()
+            tileOptions.Add(new Tile(input.tileObject, input.biomes, Quaternion.identity));
+
+            if (input.flip)
+                tileOptions.Add(new Tile(input.tileObject, input.biomes.Reverse().ToArray(), flip));
+
+            if (input.rotate)
             {
-                tileObject = tileInput.tileObject,
-                biomes = tileInput.biomes,
-                rotation = Quaternion.identity
-            });
+                tileOptions.Add(new Tile(input.tileObject, RearrangeBiomes(input.biomes, 1, 2, 0), rotateBackward));
+                tileOptions.Add(new Tile(input.tileObject, RearrangeBiomes(input.biomes, 2, 0, 1), rotateBackward * rotateBackward));
 
-            if (tileInput.flip)
-                tileOptions.Add(new Tile()
+                if (input.flip)
                 {
-                    tileObject = tileInput.tileObject,
-                    biomes = tileInput.biomes.Reverse().ToArray(),
-                    rotation = Quaternion.Euler(0, 180, 0)
-                });
-
-            if (tileInput.rotate)
-            {
-                tileOptions.Add(new Tile()
-                {
-                    tileObject = tileInput.tileObject,
-                    biomes = new BiomeType[] { tileInput.biomes[1], tileInput.biomes[2], tileInput.biomes[0] },
-                    rotation = Quaternion.Euler(0, 0, -120)
-                });
-                tileOptions.Add(new Tile()
-                {
-                    tileObject = tileInput.tileObject,
-                    biomes = new BiomeType[] { tileInput.biomes[2], tileInput.biomes[0], tileInput.biomes[1] },
-                    rotation = Quaternion.Euler(0, 0, -240)
-                });
-
-                if (tileInput.flip)
-                {
-                    tileOptions.Add(new Tile()
-                    {
-                        tileObject = tileInput.tileObject,
-                        biomes = new BiomeType[] { tileInput.biomes[1], tileInput.biomes[0], tileInput.biomes[2] },
-                        rotation = Quaternion.Euler(0, 180, 120)
-                    });
-                    tileOptions.Add(new Tile()
-                    {
-                        tileObject = tileInput.tileObject,
-                        biomes = new BiomeType[] { tileInput.biomes[0], tileInput.biomes[2], tileInput.biomes[1] },
-                        rotation = Quaternion.Euler(0, 180, 240)
-                    });
+                    tileOptions.Add(new Tile(input.tileObject, RearrangeBiomes(input.biomes, 1, 0, 2), flip * rotateForward));
+                    tileOptions.Add(new Tile(input.tileObject, RearrangeBiomes(input.biomes, 0, 2, 1), flip * rotateForward * rotateForward));
                 }
             }
         }
