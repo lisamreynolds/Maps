@@ -12,5 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d8b50e5f09959f742b04099aaa1ec3fe, type: 3}
   m_Name: Plains
   m_EditorClassIdentifier: 
-  type: 2
+  type: 1
+  displayName: Plains
   material: {fileID: 2100000, guid: 8a533317b5ee9d14cb6b698a3de75e0e, type: 2}

@@ -1,15 +1,18 @@
+using System;
 using UnityEngine;
 
 public class BiomeCell : MonoBehaviour
 {
-    public BiomeType type;
+    public Material defaultMaterial;
+
+    internal BiomeType? type;
+    internal BiomeCoordinates coordinates;
 
     internal BiomeGrid grid;
-    internal BiomeCoordinates coordinates;
 
     private void OnMouseDown()
     {
-        grid.AlterBiomes(coordinates);
+        grid.AlterBiome(coordinates);
     }
 
     public void SetBiome(Biome biome)
@@ -21,5 +24,11 @@ public class BiomeCell : MonoBehaviour
     internal void SetCoordinates(int q, int r)
     {
         coordinates = new BiomeCoordinates(q, r);
+    }
+
+    internal void Reset()
+    {
+        type = null;
+        GetComponent<MeshRenderer>().material = defaultMaterial;
     }
 }

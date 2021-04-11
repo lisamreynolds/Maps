@@ -38,6 +38,13 @@ public class TileManager : MonoBehaviour
         }
     }
 
+    public void Reset()
+    {
+        foreach (var tile in placedTiles.Values)
+            Destroy(tile);
+        placedTiles = new Dictionary<Vector3, GameObject>();
+    }
+
     internal void CreateTileCell(BiomeCell[] biomeCells, bool upTriangle)
     {
         var tileChoice = ChooseTile(biomeCells);
@@ -62,7 +69,7 @@ public class TileManager : MonoBehaviour
 
     private Tile ChooseTile(BiomeCell[] biomeCells)
     {
-        var biomeTypes = biomeCells.Select(bc => bc.type)
+        var biomeTypes = biomeCells.Select(bc => bc.type.Value)
                                    .ToArray();
 
         var matchingTiles = tileOptions.Where(tile => tile.biomes.SequenceEqual(biomeTypes));

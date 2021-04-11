@@ -15,4 +15,4 @@ MonoBehaviour:
   tileObject: {fileID: 919132149155446097, guid: bc8d10f5a75112e4db4b25d4ae57c56c, type: 3}
   flip: 0
   rotate: 0
-  biomes: 020000000200000002000000
+  biomes: 010000000100000001000000

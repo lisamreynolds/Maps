@@ -6,6 +6,7 @@ using UnityEngine;
 public class Biome : ScriptableObject
 {
     public BiomeType type;
+    public string displayName;
     public Material material;
 
     public float GetWeight(List<BiomeType> neighborTypes)
@@ -23,10 +24,9 @@ public class Biome : ScriptableObject
 
 public enum BiomeType
 {
-    None,
-    Water,
-    Plains,
-    Forest
+    Water = 0,
+    Plains = 1,
+    Forest = 2
 }
 
 
