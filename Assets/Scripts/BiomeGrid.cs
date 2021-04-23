@@ -87,10 +87,9 @@ public class BiomeGrid : MonoBehaviour
             z = r * (HexMetrics.outerRadius * 1.5f),
         };
 
-        BiomeCell cell = Instantiate(biomePrefab);
+        BiomeCell cell = Instantiate(biomePrefab, transform);
         cell.grid = this;
         cell.SetCoordinates(q, r);
-        cell.transform.SetParent(transform);
         cell.transform.localPosition = position;
 
         biomeCells.Add(cell);

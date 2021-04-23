@@ -12,6 +12,7 @@ public class BiomeCell : MonoBehaviour
 
     private void OnMouseDown()
     {
+        Debug.Log("Ya clicked me");
         grid.AlterBiome(coordinates);
     }
 
