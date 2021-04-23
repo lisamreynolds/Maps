@@ -111,11 +111,8 @@ public class BiomeGrid : MonoBehaviour
 
     void CreateUpTriangle(BiomeCell baseBiome)
     {
-        var coordsNE = new BiomeCoordinates(baseBiome.coordinates.NorthEast());
-        BiomeCell biomeNE = biomeCells.Single(b => b.coordinates.Equals(coordsNE));
-
-        var coordsE = new BiomeCoordinates(baseBiome.coordinates.East());
-        BiomeCell biomeE = biomeCells.Single(b => b.coordinates.Equals(coordsE));
+        BiomeCell biomeNE = biomeCells.Single(b => b.coordinates.Equals(baseBiome.coordinates.NorthEast()));
+        BiomeCell biomeE = biomeCells.Single(b => b.coordinates.Equals(baseBiome.coordinates.East()));
 
         BiomeCell[] relevantCells = new BiomeCell[] { baseBiome, biomeNE, biomeE };
         tileManager.CreateTileCell(relevantCells, true);
@@ -123,11 +120,8 @@ public class BiomeGrid : MonoBehaviour
 
     void CreateDownTriangle(BiomeCell baseBiome)
     {
-        var coordsE = new BiomeCoordinates(baseBiome.coordinates.East());
-        BiomeCell biomeE = biomeCells.Single(b => b.coordinates.Equals(coordsE));
-
-        var coordsSE = new BiomeCoordinates(baseBiome.coordinates.SouthEast());
-        BiomeCell biomeSE = biomeCells.Single(b => b.coordinates.Equals(coordsSE));
+        BiomeCell biomeE = biomeCells.Single(b => b.coordinates.Equals(baseBiome.coordinates.East()));
+        BiomeCell biomeSE = biomeCells.Single(b => b.coordinates.Equals(baseBiome.coordinates.SouthEast()));
 
         BiomeCell[] relevantCells = new BiomeCell[] { baseBiome, biomeE, biomeSE };
         tileManager.CreateTileCell(relevantCells, false);
@@ -184,12 +178,12 @@ public class BiomeGrid : MonoBehaviour
     {
         var coordinates = biomeCell.coordinates;
 
-        var neighborNE = biomeCells.SingleOrDefault(bc => bc.coordinates.Equals(new BiomeCoordinates(coordinates.NorthEast())));
-        var neighborE = biomeCells.SingleOrDefault(bc => bc.coordinates.Equals(new BiomeCoordinates(coordinates.East())));
-        var neighborSE = biomeCells.SingleOrDefault(bc => bc.coordinates.Equals(new BiomeCoordinates(coordinates.SouthEast())));
-        var neighborSW = biomeCells.SingleOrDefault(bc => bc.coordinates.Equals(new BiomeCoordinates(coordinates.SouthWest())));
-        var neighborW = biomeCells.SingleOrDefault(bc => bc.coordinates.Equals(new BiomeCoordinates(coordinates.West())));
-        var neighborNW = biomeCells.SingleOrDefault(bc => bc.coordinates.Equals(new BiomeCoordinates(coordinates.NorthWest())));
+        var neighborNE = biomeCells.SingleOrDefault(bc => bc.coordinates.Equals(coordinates.NorthEast()));
+        var neighborE = biomeCells.SingleOrDefault(bc => bc.coordinates.Equals(coordinates.East()));
+        var neighborSE = biomeCells.SingleOrDefault(bc => bc.coordinates.Equals(coordinates.SouthEast()));
+        var neighborSW = biomeCells.SingleOrDefault(bc => bc.coordinates.Equals(coordinates.SouthWest()));
+        var neighborW = biomeCells.SingleOrDefault(bc => bc.coordinates.Equals(coordinates.West()));
+        var neighborNW = biomeCells.SingleOrDefault(bc => bc.coordinates.Equals(coordinates.NorthWest()));
 
         bool HasBeenSet(BiomeCell neighbor) => neighbor != null && neighbor.type.HasValue;
 
