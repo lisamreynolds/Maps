@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class BiomeGrid : MonoBehaviour
@@ -10,6 +11,7 @@ public class BiomeGrid : MonoBehaviour
     public int width = 6;
     public int height = 6;
 
+    public Camera cam;
     public Dropdown biomeDropdown;
     public BiomeCell biomePrefab;
 
@@ -35,6 +37,18 @@ public class BiomeGrid : MonoBehaviour
         InitializeBiomes();
         ChangeSelectedBiome();
         Generate();
+    }
+
+    public void FixedUpdate()
+    {
+        if (Input.GetMouseButton(0) && !EventSystem.current.IsPointerOverGameObject())
+        {
+            LayerMask biomeLayerMask = LayerMask.GetMask("Biomes");
+            Vector3 mousePosition = new Vector3(Input.mousePosition.x, Input.mousePosition.y, 0f);
+            Ray ray = cam.ScreenPointToRay(mousePosition);
+            if (Physics.Raycast(ray, out RaycastHit hit, 1000f, biomeLayerMask))
+                AlterBiome(hit.collider.gameObject.GetComponent<BiomeCell>());
+        }
     }
 
     public void Reset()
@@ -122,7 +136,7 @@ public class BiomeGrid : MonoBehaviour
     void GenerateBiomeCells()
     {
         bool IsOnBorder(BiomeCoordinates coords) => coords.q <= 0 || coords.r <= 0 || coords.q >= width - 1 || coords.r >= height - 1;
-        biomeCells.Where(cell => !cell.type.HasValue 
+        biomeCells.Where(cell => !cell.type.HasValue
                               && IsOnBorder(cell.coordinates))
                   .ForEach(b => b.SetBiome(biomes[BiomeType.Water]));
 
@@ -157,11 +171,12 @@ public class BiomeGrid : MonoBehaviour
         cell.SetBiome(chosenBiome);
     }
 
-    internal void AlterBiome(BiomeCoordinates coordinates)
+    internal void AlterBiome(BiomeCell biomeCell)
     {
-        var biomeCell = biomeCells.Single(bc => bc.coordinates.Equals(coordinates));
-        biomeCell.SetBiome(selectedBiome);
+        if (biomeCell.type == selectedBiome.type)
+            return;
 
+        biomeCell.SetBiome(selectedBiome);
         CreateTrianglesForBiome(biomeCell);
     }
 
@@ -176,7 +191,7 @@ public class BiomeGrid : MonoBehaviour
         var neighborW = biomeCells.SingleOrDefault(bc => bc.coordinates.Equals(new BiomeCoordinates(coordinates.West())));
         var neighborNW = biomeCells.SingleOrDefault(bc => bc.coordinates.Equals(new BiomeCoordinates(coordinates.NorthWest())));
 
-        bool HasBeenSet(BiomeCell neighbor) => neighbor!= null && neighbor.type.HasValue;
+        bool HasBeenSet(BiomeCell neighbor) => neighbor != null && neighbor.type.HasValue;
 
         if (HasBeenSet(neighborNE) && HasBeenSet(neighborE))
             CreateUpTriangle(biomeCell);

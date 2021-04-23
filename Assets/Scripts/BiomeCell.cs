@@ -10,12 +10,6 @@ public class BiomeCell : MonoBehaviour
 
     internal BiomeGrid grid;
 
-    private void OnMouseDown()
-    {
-        Debug.Log("Ya clicked me");
-        grid.AlterBiome(coordinates);
-    }
-
     public void SetBiome(Biome biome)
     {
         type = biome.type;

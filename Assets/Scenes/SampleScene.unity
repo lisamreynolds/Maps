@@ -959,6 +959,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   width: 10
   height: 10
+  cam: {fileID: 963194227}
   biomeDropdown: {fileID: 279992601}
   biomePrefab: {fileID: 110140746}
   inputBiomes:
@@ -1647,6 +1648,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 14ad96c8f4aeb8943bbd006aef446fdf, type: 3}
       propertyPath: m_Name
       value: hexagon
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 14ad96c8f4aeb8943bbd006aef446fdf, type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 14ad96c8f4aeb8943bbd006aef446fdf, type: 3}
